@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+
+{% block title %}{{ event.name }} - EcoTracker{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto">
+    <!-- Event Header -->
+    <div class="bg-gradient-to-r from-green-500 to-green-600 rounded-lg p-6 lg:p-8 text-white mb-8">
+        <div class="text-center">
+            <h1 class="text-3xl lg:text-4xl font-bold mb-4">{{ event.name }}</h1>
+            <div class="flex flex-col sm:flex-row items-center justify-center space-y-2 sm:space-y-0 sm:space-x-6 text-green-100">
+                <div class="flex items-center">
+                    <span class="text-lg mr-2">📅</span>
+                    <span class="font-medium">{{ event.date|date:"F d, Y" }}</span>
+                </div>
+                <div class="flex items-center">
+                    <span class="text-lg mr-2">🕐</span>
+                    <span>{{ event.date|date:"P" }}</span>
+                </div>
+                <div class="flex items-center">
+                    <span class="text-lg mr-2">📍</span>
+                    <span>{{ event.location }}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Event Description -->
+    <div class="bg-white rounded-lg shadow-md p-6 lg:p-8 mb-8">
+        <h2 class="text-2xl font-bold text-gray-800 mb-4">Event Details</h2>
+        <div class="prose max-w-none">
+            <p class="text-gray-700 text-lg leading-relaxed">{{ event.description }}</p>
+        </div>
+        
+        <!-- Points Information -->
+        <div class="mt-6 bg-green-50 rounded-lg p-4">
+            <div class="flex items-center justify-between">
+                <span class="text-green-800 font-semibold text-lg">Participation Points:</span>
+                <span class="bg-green-500 text-white px-4 py-2 rounded-full text-xl font-bold">{{ event.points_awarded }}</span>
+            </div>
+            <p class="text-green-700 text-sm mt-2">
+                Earn these points by checking in at the event using the QR code below.
+            </p>
+        </div>
+    </div>
+
+    <!-- QR Code Section -->
+    <div class="bg-white rounded-lg shadow-md p-6 lg:p-8 text-center">
+        <h2 class="text-2xl font-bold text-gray-800 mb-4">📱 Event Check-in QR Code</h2>
+        <p class="text-gray-600 mb-6 max-w-2xl mx-auto">
+            Present this QR code to an event organizer to check in and earn your participation points instantly!
+        </p>
+        
+        <!-- QR Code Container -->
+        <div class="bg-gray-50 rounded-lg p-6 inline-block">
+            <img src="{% url 'event-qr-code' event.id %}" 
+                 alt="Event QR Code for {{ event.name }}" 
+                 class="mx-auto border-4 border-gray-300 rounded-lg shadow-lg"
+                 style="max-width: 300px; height: auto;">
+        </div>
+        
+        <!-- Instructions -->
+        <div class="mt-6 bg-blue-50 rounded-lg p-4 max-w-2xl mx-auto">
+            <h3 class="font-semibold text-blue-800 mb-2">How to Check In:</h3>
+            <ol class="text-blue-700 text-sm text-left space-y-1">
+                <li>1. Show this QR code to an event organizer</li>
+                <li>2. The organizer will scan it with their device</li>
+                <li>3. You'll receive instant points for participation</li>
+                <li>4. Check your dashboard to see updated points</li>
+            </ol>
+        </div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="mt-8 flex flex-col sm:flex-row gap-4 justify-center">
+        <a href="{% url 'event-list' %}" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-6 rounded-lg transition-all duration-200 hover:scale-105">
+            ← Back to Events
+        </a>
+        <a href="{% url 'dashboard' %}" class="bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-6 rounded-lg transition-all duration-200 hover:scale-105">
+            📊 View Dashboard
+        </a>
+    </div>
+</div>
+{% endblock %}

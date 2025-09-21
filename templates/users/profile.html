@@ -1,0 +1,192 @@
+{% extends "base.html" %}
+
+{% block title %}Profile - {{ user.username }} - EcoTracker{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto">
+    <!-- Profile Header -->
+    <div class="bg-gradient-to-r from-green-500 to-green-600 rounded-lg p-6 lg:p-8 text-white mb-8">
+        <div class="flex flex-col lg:flex-row items-center lg:items-start space-y-4 lg:space-y-0 lg:space-x-6">
+            <!-- Avatar -->
+            <div class="w-24 h-24 lg:w-32 lg:h-32 bg-white bg-opacity-20 rounded-full flex items-center justify-center text-4xl lg:text-5xl">
+                🌿
+            </div>
+            
+            <!-- User Info -->
+            <div class="text-center lg:text-left flex-1">
+                <h1 class="text-3xl lg:text-4xl font-bold mb-2">{{ user.username }}</h1>
+                <p class="text-green-100 text-lg mb-4">{{ user.email }}</p>
+                
+                <!-- Points Display -->                
+                <div class="flex flex-col sm:flex-row gap-4">
+                    <div class="bg-white bg-opacity-20 rounded-lg p-4 text-center">
+                        <div class="text-2xl lg:text-3xl font-bold">{{ profile.total_points }}</div>
+                        <div class="text-green-100 text-sm">Total Points</div>
+                    </div>
+                    <div class="bg-white bg-opacity-20 rounded-lg p-4 text-center">
+                        <div class="text-lg lg:text-xl font-bold">{{ profile.current_level }}</div>
+                        <div class="text-green-100 text-sm">Current Level</div>
+                    </div>
+                    <div class="bg-white bg-opacity-20 rounded-lg p-4 text-center">
+                        <div class="text-lg lg:text-xl font-bold">{{ profile.total_carbon_saved|floatformat:1 }}kg</div>
+                        <div class="text-green-100 text-sm">CO₂ Saved</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Badges Section -->
+    <div class="bg-white rounded-lg shadow-md overflow-hidden mb-8">
+        <div class="bg-gradient-to-r from-purple-400 to-purple-500 p-4">
+            <h2 class="text-xl lg:text-2xl font-bold text-white text-center">🏆 Badges Earned</h2>
+        </div>
+        
+        <div class="p-6">
+            {% if user_badges %}
+                <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+                    {% for badge in user_badges %}
+                        <div class="text-center p-4 rounded-lg border-2 border-gray-200 hover:border-purple-300 transition-colors">
+                            <div class="text-4xl mb-2">
+                                {% if badge.badge_type == 'BRONZE' %}🥉
+                                {% elif badge.badge_type == 'SILVER' %}🥈
+                                {% elif badge.badge_type == 'GOLD' %}🥇
+                                {% elif badge.badge_type == 'PLATINUM' %}💎
+                                {% elif badge.badge_type == 'ECO_CHAMPION' %}🌟
+                                {% elif badge.badge_type == 'TREE_LOVER' %}🌳
+                                {% elif badge.badge_type == 'RECYCLING_HERO' %}♻️
+                                {% elif badge.badge_type == 'CLEANUP_MASTER' %}🧹
+                                {% elif badge.badge_type == 'AWARENESS_ADVOCATE' %}📢
+                                {% elif badge.badge_type == 'ENERGY_SAVER' %}⚡
+                                {% elif badge.badge_type == 'EVENT_PARTICIPANT' %}🎭
+                                {% elif badge.badge_type == 'TEAM_PLAYER' %}👥
+                                {% else %}🏆{% endif %}
+                            </div>
+                            <div class="text-sm font-semibold text-gray-800">{{ badge.get_badge_type_display }}</div>
+                            <div class="text-xs text-gray-500 mt-1">{{ badge.earned_at|date:"M d, Y" }}</div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="text-center py-8 text-gray-500">
+                    <div class="text-6xl mb-4">🎯</div>
+                    <p class="text-lg font-medium">No badges earned yet!</p>
+                    <p class="text-sm mb-4">Complete activities to start earning badges.</p>
+                    <a href="{% url 'submit-activity' %}" class="inline-block bg-purple-500 hover:bg-purple-600 text-white font-bold py-2 px-4 rounded-lg transition-all duration-200">Start Your Journey</a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Level Progress Section -->
+    <div class="bg-white rounded-lg shadow-md overflow-hidden mb-8">
+        <div class="bg-gradient-to-r from-indigo-400 to-indigo-500 p-4">
+            <h2 class="text-xl lg:text-2xl font-bold text-white text-center">🎖️ Level Progress</h2>
+        </div>
+        
+        <div class="p-6">
+            <div class="text-center mb-6">
+                <div class="text-3xl font-bold text-indigo-600 mb-2">{{ profile.current_level }}</div>
+                <div class="text-gray-600">Current Level</div>
+            </div>
+            
+            {% if profile.next_level_points > 0 %}
+                <div class="mb-4">
+                    <div class="flex justify-between text-sm text-gray-600 mb-2">
+                        <span>{{ profile.total_points }} points</span>
+                        <span>{{ profile.next_level_points }} points to next level</span>
+                    </div>
+                    <div class="w-full bg-gray-200 rounded-full h-3">
+                        <div class="bg-indigo-500 h-3 rounded-full transition-all duration-300" 
+                             style="width: {{ profile.level_progress_percentage }}%"></div>
+                    </div>
+                </div>
+            {% else %}
+                <div class="text-center text-green-600 font-semibold">
+                    🎉 Maximum level reached! You're an Eco Champion!
+                </div>
+            {% endif %}
+        </div>
+    </div>
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+        <div class="bg-white p-6 rounded-lg shadow-md text-center">
+            <div class="text-3xl mb-2">🏆</div>
+            <div class="text-2xl font-bold text-green-600">{{ total_points }}</div>
+            <div class="text-gray-600">Total Points</div>
+        </div>
+        
+        <div class="bg-white p-6 rounded-lg shadow-md text-center">
+            <div class="text-3xl mb-2">📊</div>
+            <div class="text-2xl font-bold text-blue-600">{{ points_to_certificate }}</div>
+            <div class="text-gray-600">Points to Certificate</div>
+        </div>
+        
+        <div class="bg-white p-6 rounded-lg shadow-md text-center">
+            <div class="text-3xl mb-2">🎯</div>
+            <div class="text-2xl font-bold text-purple-600">
+                {{ progress_percentage|floatformat:0 }}%
+            </div>
+            <div class="text-gray-600">Progress</div>
+        </div>
+    </div>
+
+    <!-- Achievements Section -->
+    <div class="bg-white rounded-lg shadow-md overflow-hidden">
+        <div class="bg-gradient-to-r from-yellow-400 to-yellow-500 p-4">
+            <h2 class="text-xl lg:text-2xl font-bold text-white text-center">🏅 Achievements</h2>
+        </div>
+        
+        <div class="p-6 lg:p-8">
+            {% if is_eligible_for_certificate %}
+                <!-- Certificate Achievement -->
+                <div class="bg-green-50 border-2 border-green-200 rounded-lg p-6 text-center">
+                    <div class="text-6xl mb-4">🎉</div>
+                    <h3 class="text-2xl font-bold text-green-800 mb-2">Eco Champion Certificate Unlocked!</h3>
+                    <p class="text-green-700 mb-4">
+                        Congratulations! You've earned over {{ certificate_milestone }} points and are now officially an Eco Champion!
+                    </p>
+                    <a href="{% url 'generate-certificate' %}" class="inline-block bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-6 rounded-lg text-lg transition-all duration-200 hover:scale-105 shadow-lg">
+                        📜 Download Your Certificate (PDF)
+                    </a>
+                </div>
+            {% else %}
+                <!-- Progress Towards Certificate -->
+                <div class="text-center">
+                    <div class="text-6xl mb-4">🎯</div>
+                    <h3 class="text-xl font-semibold text-gray-800 mb-4">Working Towards Eco Champion Status</h3>
+                    
+                    <!-- Progress Bar -->
+                    <div class="mb-6">
+                        <div class="flex justify-between text-sm text-gray-600 mb-2">
+                            <span>{{ total_points }} points earned</span>
+                            <span>{{ certificate_milestone }} points needed</span>
+                        </div>
+                        <div class="w-full bg-gray-200 rounded-full h-4">
+                            <div class="bg-green-500 h-4 rounded-full transition-all duration-300" 
+                                 style="width: {{ progress_percentage|floatformat:0 }}%"></div>
+                        </div>
+                    </div>
+                    
+                    <p class="text-gray-600 mb-4">
+                        Keep up the great work! You need {{ points_to_certificate }} more points to unlock your Eco Champion certificate.
+                    </p>
+                    
+                    <a href="{% url 'submit-activity' %}" class="inline-block bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-lg transition-all duration-200 hover:scale-105">
+                        🌱 Log More Activities
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="mt-8 grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <a href="{% url 'dashboard' %}" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-6 rounded-lg text-center transition-all duration-200 hover:scale-105">
+            📊 View Dashboard
+        </a>
+        <a href="{% url 'submit-activity' %}" class="bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-6 rounded-lg text-center transition-all duration-200 hover:scale-105">
+            🌱 Log Activity
+        </a>
+    </div>
+</div>
+{% endblock %}

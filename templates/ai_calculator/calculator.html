@@ -1,0 +1,302 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto px-4 py-8">
+    <!-- Header -->
+    <div class="text-center mb-8">
+        <h1 class="text-3xl font-bold text-gray-900 mb-4">🧮 AI Carbon Savings Calculator</h1>
+        <p class="text-lg text-gray-600">Calculate your environmental impact with our intelligent AI-powered calculator</p>
+    </div>
+
+    <!-- Calculator Interface -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <!-- Input Panel -->
+        <div class="bg-white rounded-lg shadow-lg p-6">
+            <h2 class="text-xl font-semibold text-gray-900 mb-4">📊 Calculate Activity Impact</h2>
+            
+            <form id="calculator-form" class="space-y-4">
+                {% csrf_token %}
+                
+                <!-- Activity Type -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Activity Type</label>
+                    <select id="activity-type" name="activity_type" class="w-full border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-green-500 focus:border-transparent">
+                        <option value="TREE">🌳 Tree Planting (trees)</option>
+                        <option value="RECYCLE" selected>♻️ Recycling (kg)</option>
+                        <option value="CLEANUP">🧹 Cleanup (kg)</option>
+                        <option value="AWARENESS">📢 Awareness Campaign (hours)</option>
+                        <option value="ENERGY_SAVING">⚡ Energy Saving (kWh)</option>
+                    </select>
+                </div>
+
+                <!-- Quantity -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Quantity</label>
+                    <input type="number" id="quantity" name="quantity" value="5" min="0.1" step="0.1" 
+                           class="w-full border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-green-500 focus:border-transparent">
+                </div>
+
+                <!-- Duration (optional) -->
+                <div id="duration-field" style="display: none;">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Duration (hours)</label>
+                    <input type="number" id="duration" name="duration_hours" min="0.1" step="0.1" 
+                           class="w-full border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-green-500 focus:border-transparent">
+                </div>
+
+                <!-- Calculate Button -->
+                <button type="submit" class="w-full bg-gradient-to-r from-green-600 to-blue-600 text-white font-semibold py-3 px-6 rounded-lg hover:from-green-700 hover:to-blue-700 transition duration-300">
+                    🧮 Calculate Impact
+                </button>
+            </form>
+        </div>
+
+        <!-- Results Panel -->
+        <div class="bg-white rounded-lg shadow-lg p-6">
+            <h2 class="text-xl font-semibold text-gray-900 mb-4">📈 AI Calculation Results</h2>
+            
+            <div id="loading" style="display: none;" class="text-center py-8">
+                <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-green-500"></div>
+                <p class="text-gray-600 mt-2">Calculating with AI...</p>
+            </div>
+
+            <div id="results" style="display: none;" class="space-y-4">
+                <!-- Main Results -->
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="bg-green-50 p-4 rounded-lg">
+                        <div class="text-2xl font-bold text-green-600" id="carbon-saved">0 kg</div>
+                        <div class="text-sm text-gray-600">CO₂ Saved</div>
+                    </div>
+                    <div class="bg-blue-50 p-4 rounded-lg">
+                        <div class="text-2xl font-bold text-blue-600" id="points-earned">0 pts</div>
+                        <div class="text-sm text-gray-600">Points Earned</div>
+                    </div>
+                </div>
+
+                <!-- Efficiency Score -->
+                <div class="bg-yellow-50 p-4 rounded-lg">
+                    <div class="text-lg font-semibold text-yellow-600" id="efficiency-score">0 pts/kg</div>
+                    <div class="text-sm text-gray-600">Efficiency Score</div>
+                </div>
+
+                <!-- Impact Level -->
+                <div class="bg-purple-50 p-4 rounded-lg">
+                    <div class="text-lg font-semibold text-purple-600" id="impact-level">-</div>
+                    <div class="text-sm text-gray-600">Impact Level</div>
+                </div>
+
+                <!-- AI Insights -->
+                <div class="bg-gray-50 p-4 rounded-lg">
+                    <h4 class="font-semibold text-gray-700 mb-2">🤖 AI Insights</h4>
+                    <div id="ai-insights" class="text-sm text-gray-600"></div>
+                </div>
+
+                <!-- Equivalent Impact -->
+                <div class="bg-indigo-50 p-4 rounded-lg">
+                    <h4 class="font-semibold text-indigo-700 mb-2">🌍 Equivalent Impact</h4>
+                    <div id="equivalent-impact" class="text-sm text-gray-600 space-y-1"></div>
+                </div>
+            </div>
+
+            <div id="no-results" class="text-center py-8 text-gray-500">
+                Enter activity details and click "Calculate Impact" to see AI-powered results
+            </div>
+        </div>
+    </div>
+
+    <!-- Compound Calculator Section -->
+    <div class="mt-12 bg-white rounded-lg shadow-lg p-6">
+        <h2 class="text-xl font-semibold text-gray-900 mb-4">🔗 Compound Activities Calculator</h2>
+        <p class="text-gray-600 mb-4">Calculate the synergistic effects of multiple activities combined</p>
+        
+        <div id="compound-activities" class="space-y-4">
+            <!-- Activities will be added dynamically -->
+        </div>
+
+        <div class="flex space-x-4 mt-4">
+            <button id="add-activity" class="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 transition">
+                ➕ Add Activity
+            </button>
+            <button id="calculate-compound" class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition">
+                🧮 Calculate Compound Effect
+            </button>
+        </div>
+
+        <div id="compound-results" style="display: none;" class="mt-6 p-4 bg-gradient-to-r from-green-50 to-blue-50 rounded-lg">
+            <!-- Compound results will be displayed here -->
+        </div>
+    </div>
+
+    <!-- Prediction Section -->
+    <div class="mt-8 bg-white rounded-lg shadow-lg p-6">
+        <h2 class="text-xl font-semibold text-gray-900 mb-4">🔮 Activity Outcome Predictor</h2>
+        
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div>
+                <select id="predict-activity" class="w-full border border-gray-300 rounded-lg p-3">
+                    <option value="TREE">🌳 Tree Planting</option>
+                    <option value="RECYCLE">♻️ Recycling</option>
+                    <option value="CLEANUP">🧹 Cleanup</option>
+                    <option value="AWARENESS">📢 Awareness</option>
+                    <option value="ENERGY_SAVING">⚡ Energy Saving</option>
+                </select>
+            </div>
+            <div>
+                <input type="number" id="predict-quantity" placeholder="Target quantity" min="1" value="10"
+                       class="w-full border border-gray-300 rounded-lg p-3">
+            </div>
+            <div>
+                <button id="predict-outcome" class="w-full bg-purple-500 text-white px-4 py-3 rounded-lg hover:bg-purple-600 transition">
+                    🔮 Predict Outcome
+                </button>
+            </div>
+        </div>
+
+        <div id="prediction-results" style="display: none;" class="mt-4 p-4 bg-purple-50 rounded-lg">
+            <!-- Prediction results will be displayed here -->
+        </div>
+    </div>
+
+    <!-- Back to Dashboard -->
+    <div class="mt-8 text-center">
+        <a href="{% url 'dashboard' %}" class="text-green-600 hover:text-green-700 font-medium">
+            ← Back to Dashboard
+        </a>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const form = document.getElementById('calculator-form');
+    const activityType = document.getElementById('activity-type');
+    const quantity = document.getElementById('quantity');
+    const duration = document.getElementById('duration');
+    const durationField = document.getElementById('duration-field');
+    
+    // Show/hide duration field based on activity type
+    activityType.addEventListener('change', () => {
+        if (activityType.value === 'AWARENESS') {
+            durationField.style.display = 'block';
+        } else {
+            durationField.style.display = 'none';
+        }
+    });
+
+    // Handle form submission
+    form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        const loading = document.getElementById('loading');
+        const results = document.getElementById('results');
+        const noResults = document.getElementById('no-results');
+        
+        loading.style.display = 'block';
+        results.style.display = 'none';
+        noResults.style.display = 'none';
+        
+        try {
+            const formData = {
+                activity_type: activityType.value,
+                quantity: parseFloat(quantity.value),
+                duration_hours: duration.value ? parseFloat(duration.value) : null
+            };
+            
+            const response = await fetch('{% url "ai-calculator-api" %}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': '{{ csrf_token }}'
+                },
+                body: JSON.stringify(formData)
+            });
+            
+            const data = await response.json();
+            
+            if (data.success) {
+                displayResults(data.calculation);
+            } else {
+                throw new Error(data.error);
+            }
+        } catch (error) {
+            console.error('Calculation error:', error);
+            alert('Error calculating impact: ' + error.message);
+        } finally {
+            loading.style.display = 'none';
+        }
+    });
+
+    function displayResults(calc) {
+        document.getElementById('carbon-saved').textContent = `${calc.carbon_saved_kg} kg`;
+        document.getElementById('points-earned').textContent = `${calc.points_earned} pts`;
+        document.getElementById('efficiency-score').textContent = `${calc.efficiency_score} pts/kg`;
+        document.getElementById('impact-level').textContent = calc.impact_level;
+        
+        // AI Insights
+        const insightsDiv = document.getElementById('ai-insights');
+        insightsDiv.innerHTML = calc.ai_insights.map(insight => `<p>• ${insight}</p>`).join('');
+        
+        // Equivalent Impact
+        const equivalentDiv = document.getElementById('equivalent-impact');
+        const equiv = calc.equivalent_impact;
+        equivalentDiv.innerHTML = `
+            <p>🌳 Trees: ${equiv.trees_planted_equivalent} trees planted</p>
+            <p>🚗 Miles offset: ${equiv.miles_driven_offset} miles</p>
+            <p>💡 LED bulbs: ${equiv.led_bulbs_year_equivalent} bulb-years</p>
+            <p>🍶 Bottles: ${equiv.plastic_bottles_recycled} plastic bottles</p>
+        `;
+        
+        document.getElementById('results').style.display = 'block';
+    }
+
+    // Prediction functionality
+    document.getElementById('predict-outcome').addEventListener('click', async () => {
+        const activityType = document.getElementById('predict-activity').value;
+        const targetQuantity = document.getElementById('predict-quantity').value;
+        
+        try {
+            const response = await fetch(`{% url "ai-calculator-predict-api" %}?activity_type=${activityType}&quantity=${targetQuantity}`);
+            const data = await response.json();
+            
+            if (data.success) {
+                displayPrediction(data.prediction);
+            } else {
+                throw new Error(data.error);
+            }
+        } catch (error) {
+            console.error('Prediction error:', error);
+            alert('Error predicting outcome: ' + error.message);
+        }
+    });
+
+    function displayPrediction(pred) {
+        const resultsDiv = document.getElementById('prediction-results');
+        const expected = pred.expected_result;
+        
+        resultsDiv.innerHTML = `
+            <h4 class="font-semibold text-purple-700 mb-2">Prediction Results</h4>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                <div class="text-center">
+                    <div class="text-lg font-bold text-green-600">${expected.carbon_saved_kg} kg CO₂</div>
+                    <div class="text-sm text-gray-600">Expected Savings</div>
+                </div>
+                <div class="text-center">
+                    <div class="text-lg font-bold text-blue-600">${expected.points_earned} pts</div>
+                    <div class="text-sm text-gray-600">Expected Points</div>
+                </div>
+                <div class="text-center">
+                    <div class="text-lg font-bold text-purple-600">${pred.success_probability}%</div>
+                    <div class="text-sm text-gray-600">Success Probability</div>
+                </div>
+            </div>
+            <div class="space-y-2">
+                <p><strong>Timeline:</strong> ${pred.estimated_timeline_days} days</p>
+                <p><strong>Optimal Approach:</strong> ${pred.optimal_approach}</p>
+                <p><strong>Success Tips:</strong> ${pred.success_tips.join(', ')}</p>
+            </div>
+        `;
+        
+        resultsDiv.style.display = 'block';
+    }
+});
+</script>
+{% endblock %}

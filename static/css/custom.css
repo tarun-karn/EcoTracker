@@ -1,0 +1,312 @@
+/* Custom CSS for EcoTracker */
+
+/* Animation for progress bars */
+.progress-bar {
+    animation: progress-fill 1s ease-in-out;
+}
+
+@keyframes progress-fill {
+    from { width: 0; }
+}
+
+/* Badge hover effects */
+.badge-item {
+    transition: all 0.3s ease;
+}
+
+.badge-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+
+/* Level indicator styles */
+.level-indicator {
+    position: relative;
+    overflow: hidden;
+}
+
+.level-indicator::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+    animation: shimmer 2s infinite;
+}
+
+@keyframes shimmer {
+    0% { left: -100%; }
+    100% { left: 100%; }
+}
+
+/* Card hover effects */
+.stats-card {
+    transition: all 0.3s ease;
+}
+
+.stats-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+}
+
+/* Custom scrollbar for chat */
+.chat-messages::-webkit-scrollbar {
+    width: 4px;
+}
+
+.chat-messages::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+.chat-messages::-webkit-scrollbar-thumb {
+    background: #10b981;
+    border-radius: 2px;
+}
+
+.chat-messages::-webkit-scrollbar-thumb:hover {
+    background: #059669;
+}
+
+/* Pulse animation for new notifications */
+.pulse {
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+/* Activity type icons */
+.activity-icon {
+    font-size: 1.5rem;
+    margin-right: 0.5rem;
+}
+
+/* QR Scanner camera overlay */
+.scanner-overlay {
+    position: relative;
+    overflow: hidden;
+}
+
+.scanner-overlay::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(16, 185, 129, 0.1);
+    border: 3px solid #10b981;
+    border-radius: 8px;
+    animation: scanner-border 2s infinite;
+}
+
+@keyframes scanner-border {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+}
+
+/* Responsive typography improvements */
+@media (max-width: 640px) {
+    .text-responsive {
+        font-size: 0.875rem;
+    }
+}
+
+/* Custom button styles */
+.btn-eco {
+    background: linear-gradient(135deg, #10b981, #059669);
+    border: none;
+    color: white;
+    font-weight: 600;
+    padding: 12px 24px;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+}
+
+.btn-eco:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(16, 185, 129, 0.4);
+}
+
+.btn-eco:active {
+    transform: translateY(0);
+}
+
+/* Loading spinner */
+.spinner {
+    border: 2px solid #f3f3f3;
+    border-top: 2px solid #10b981;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Chart container improvements */
+.chart-container {
+    position: relative;
+    height: 300px;
+    margin: 1rem 0;
+}
+
+@media (max-width: 768px) {
+    .chart-container {
+        height: 250px;
+    }
+}
+
+/* Tooltip styles */
+.tooltip {
+    position: relative;
+    display: inline-block;
+}
+
+.tooltip .tooltiptext {
+    visibility: hidden;
+    width: 200px;
+    background-color: #374151;
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 8px;
+    position: absolute;
+    z-index: 1;
+    bottom: 125%;
+    left: 50%;
+    margin-left: -100px;
+    opacity: 0;
+    transition: opacity 0.3s;
+    font-size: 0.875rem;
+}
+
+.tooltip:hover .tooltiptext {
+    visibility: visible;
+    opacity: 1;
+}
+
+/* Success animations */
+.success-animation {
+    animation: success-bounce 0.6s ease-in-out;
+}
+
+@keyframes success-bounce {
+    0% { transform: scale(0.3); opacity: 0; }
+    50% { transform: scale(1.05); opacity: 0.9; }
+    70% { transform: scale(0.9); opacity: 1; }
+    100% { transform: scale(1); opacity: 1; }
+}
+
+/* Error shake animation */
+.error-shake {
+    animation: shake 0.5s ease-in-out;
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+    20%, 40%, 60%, 80% { transform: translateX(5px); }
+}
+
+/* Enhanced Chatbot Button Styles - MAXIMUM VISIBILITY */
+#chatbot-toggle {
+    position: fixed !important;
+    bottom: 20px !important;
+    right: 20px !important;
+    z-index: 99999 !important;
+    background: linear-gradient(135deg, #10b981, #3b82f6) !important;
+    box-shadow: 0 10px 30px rgba(16, 185, 129, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.1) !important;
+    transform: scale(1);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    width: 60px !important;
+    height: 60px !important;
+    border-radius: 50% !important;
+    border: 3px solid #ffffff !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    cursor: pointer !important;
+    /* Ensure it's always visible */
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+#chatbot-toggle:hover {
+    transform: scale(1.1) !important;
+    box-shadow: 0 15px 40px rgba(16, 185, 129, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.2) !important;
+}
+
+/* Force show chatbot container */
+#chatbot-container {
+    position: fixed !important;
+    bottom: 20px !important;
+    right: 20px !important;
+    z-index: 99998 !important;
+    display: block !important;
+    visibility: visible !important;
+}
+
+/* Chatbot attention animation */
+.chatbot-attention {
+    animation: attention-pulse 2s infinite;
+}
+
+@keyframes attention-pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+}
+
+/* AI Features highlight */
+.ai-feature-highlight {
+    background: linear-gradient(135deg, #dbeafe, #d1fae5);
+    border: 2px solid #10b981;
+    position: relative;
+    overflow: hidden;
+}
+
+.ai-feature-highlight::before {
+    content: '🤖';
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    font-size: 1.2rem;
+    opacity: 0.8;
+}
+
+/* Mobile optimizations for chatbot */
+@media (max-width: 640px) {
+    #chatbot-toggle {
+        bottom: 5rem !important; /* Above mobile navigation if any */
+        right: 1rem !important;
+        padding: 1rem !important;
+    }
+    
+    #chatbot-window {
+        width: calc(100vw - 2rem) !important;
+        height: 70vh !important;
+        bottom: 1rem !important;
+        right: 1rem !important;
+        left: 1rem !important;
+    }
+}
+
+/* Notification badge animation */
+.notification-badge {
+    animation: bounce-attention 1s infinite;
+}
+
+@keyframes bounce-attention {
+    0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+    40% { transform: translateY(-3px); }
+    60% { transform: translateY(-2px); }
+}
